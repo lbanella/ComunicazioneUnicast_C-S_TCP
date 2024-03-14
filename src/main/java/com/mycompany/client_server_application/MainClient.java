@@ -8,7 +8,9 @@ package com.mycompany.client_server_application;
 public class MainClient {
 
     public static void main(String[] args) {
-        throw new UnsupportedOperationException("The method is not implemented yet.");
+        Client client= new Client("Lorenzo","Rosso");
+        client.connetti("127.0.0.1",1789);
+        client.chiudi();
     }
     
     
