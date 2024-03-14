@@ -1,7 +1,10 @@
 package com.mycompany.client_server_application;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,11 +18,25 @@ public class Server {
     private int porta;
 
     public Server(int porta) {
-        throw new UnsupportedOperationException("The method is not implemented yet.");
+        this.porta=porta;
+        try {
+            this.serverSocket=new ServerSocket(this.porta);
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public Socket attendi() {
-        throw new UnsupportedOperationException("The method is not implemented yet.");
+        
+        try {
+            //accept,istaura una connessione
+             this.clientSocket= serverSocket.accept();
+              //scambio dati
+           System.out.println("Connessione Effettuata");
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return clientSocket;
     }
 
     public void scrivi() {
@@ -35,7 +52,12 @@ public class Server {
     }
 
     public void termina() {
-        throw new UnsupportedOperationException("The method is not implemented yet.");
+        try {
+            //close
+            serverSocket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }
