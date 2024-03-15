@@ -1,6 +1,7 @@
 package com.mycompany.client_server_application;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
@@ -28,8 +29,12 @@ public class Client {
         System.out.println(" ______________________________\n");
         try {
             this.socket = new Socket(nomeServer, portaServer); 
-            //chiudi();
-        } catch(UnknownHostException ex){ 
+            System.out.println("Connessione avvenuta con il server");
+        } 
+        catch(ConnectException ex){
+            System.err.println("Il server non è in ascolto!");
+        }
+        catch(UnknownHostException ex){ 
             System.err.println("Host sconosciuto!");
             System.err.println( ex.getMessage());
         } catch (IOException e){
