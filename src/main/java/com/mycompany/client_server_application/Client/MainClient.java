@@ -12,11 +12,8 @@ public class MainClient {
     public static void main(String[] args) {
         String colore = scegliColoreTesto();
        Client client= new Client("Lorenzo",colore);
-      
-      
-        
         client.connetti("127.0.0.1",1789);
-        client.comunica(); 
+         
         
     }
 
