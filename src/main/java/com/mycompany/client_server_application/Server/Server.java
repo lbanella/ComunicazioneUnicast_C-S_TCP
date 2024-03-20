@@ -35,6 +35,7 @@ public class Server {
                 output = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
                 input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));   
             }
+            comunica();
              
         }
         catch(BindException ex){
