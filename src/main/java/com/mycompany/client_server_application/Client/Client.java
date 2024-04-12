@@ -35,7 +35,6 @@ import java.util.Scanner;
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println(colore+"Connessione avvenuta con il server"+RESET);
-            comunica();
         } catch (ConnectException ex) {
             System.err.println("Il server non è in ascolto!");
             System.err.println(ex.getMessage());

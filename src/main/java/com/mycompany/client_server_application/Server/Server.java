@@ -34,9 +34,7 @@ public class Server {
                 System.out.println("Connessione stabilita con il Client");
                 output = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
                 input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));   
-            }
-            comunica();
-             
+            }  
         }
         catch(BindException ex){
             System.err.println("Porta gia in uso");
@@ -80,8 +78,6 @@ public class Server {
 
     public void scrivi() {
         if(!serverSocket.isClosed() && !clientSocket.isClosed()){
-
-        
             System.err.println("Scrivi :");
             String messaggio = scanner.nextLine();
             System.out.println("Messaggio inviato al client  : "+messaggio);

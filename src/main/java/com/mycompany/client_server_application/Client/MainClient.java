@@ -11,10 +11,9 @@ public class MainClient {
 
     public static void main(String[] args) {
         String colore = scegliColoreTesto();
-       Client client= new Client("Lorenzo",colore);
+        Client client= new Client("Lorenzo",colore);
         client.connetti("127.0.0.1",1789);
-         
-        
+        client.comunica();
     }
 
     public static String scegliColoreTesto(){
@@ -44,14 +43,10 @@ public class MainClient {
             case 5:
                 colore= "\u001B[35m";
                 break;
-            
             default:
                 System.out.println("Scelta non valida, utilizzando il colore di default.");
         }
-    
         return colore;
     }
-    
-    
     
 }
