@@ -70,7 +70,7 @@ public class Server {
         }
     }
     public void comunica(){
-        while(!serverSocket.isClosed() && !clientSocket.isClosed() ){
+        while(!clientSocket.isClosed() ){
             leggi();
             scrivi();
         }
@@ -90,6 +90,9 @@ public class Server {
                     termina();
                 }else if(messaggio.equalsIgnoreCase("chiudi") ){
                     chiudi();
+                }
+                else if(messaggio.equalsIgnoreCase("termina server") ){
+                    chiudi();
                     termina();
                 }
                 
@@ -107,10 +110,10 @@ public class Server {
                 System.out.println("Messaggio inviato dal client: " + messaggioRicevuto); 
                 if(messaggioRicevuto == null){
                     chiudi();
-                    termina();  
+                   
                 }else if(messaggioRicevuto.equalsIgnoreCase("chiudi") ){
                     chiudi();
-                    termina();  
+                   
                 }
             } catch (IOException ex) {
                  System.err.println(ex.getMessage());
@@ -134,10 +137,10 @@ public class Server {
 
     public void termina() {
         try {
-            if(serverSocket != null && clientSocket.isClosed()){
+            
                 //close
                 serverSocket.close();
-            }
+            
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
