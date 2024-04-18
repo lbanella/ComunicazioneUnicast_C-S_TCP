@@ -21,20 +21,17 @@ public class Server {
     private BufferedReader input;
     private BufferedWriter output;
     private Scanner scanner;
-    
+    private boolean connessione;
+    private String messaggioDaInviare;
+    private String messaggioRicevuto;
+
 
     public Server(int porta) {
         this.porta=porta;
         this.scanner = new Scanner(System.in);
         try {
             this.serverSocket=new ServerSocket(this.porta);
-            System.out.println("Il server è in ascolto sulla porta : "+this.porta);
-            this.clientSocket=attendi();
-            if(clientSocket != null){
-                System.out.println("Connessione stabilita con il Client");
-                output = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-                input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));   
-            }  
+            System.out.println("Il server è in ascolto sulla porta : "+this.porta);          
         }
         catch(BindException ex){
             System.err.println("Porta gia in uso");
@@ -49,8 +46,12 @@ public class Server {
 
     public Socket attendi() {
         try {
-            //accept,istaura una connessione
-            return serverSocket.accept(); 
+            clientSocket = serverSocket.accept(); // Il metodo bloccante accept() aspetta finché non arriva una richiesta
+            System.out.println("Connessione stabilita con il client");
+            output = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));   
+            connessione = true;
+            
         }
         catch (NullPointerException ex) {
             System.err.println("Errore nella fase di connessione con il client");
@@ -68,32 +69,40 @@ public class Server {
             System.err.println(ex.getMessage());
             return null;
         }
+        return clientSocket;
     }
     public void comunica(){
-        while(!clientSocket.isClosed() ){
-            leggi();
-            scrivi();
+        while(!serverSocket.isClosed()){
+            this.clientSocket=attendi();
+            while(connessione){
+                leggi();
+                scrivi();
+            }
+            if(!serverSocket.isClosed() && !connessione){
+                System.out.println("Vuoi spegnere il server ");
+                boolean spegniServer = scanner.nextBoolean();
+                scanner.nextLine();
+                if(spegniServer){
+                    chiudi();
+                    termina();
+                }
+            }
+                
         }
+
     }
 
     public void scrivi() {
-        if(!serverSocket.isClosed() && !clientSocket.isClosed()){
+        if(connessione){
             System.err.println("Scrivi :");
-            String messaggio = scanner.nextLine();
-            System.out.println("Messaggio inviato al client  : "+messaggio);
+            this.messaggioDaInviare = scanner.nextLine();
+            System.out.println("messaggioDaInviare inviato al client  : "+messaggioDaInviare);
             try {
-                output.write(messaggio);
+                output.write(messaggioDaInviare);
                 output.newLine();
                 output.flush(); 
-                if(messaggio == null){
-                    chiudi();
-                    termina();
-                }else if(messaggio.equalsIgnoreCase("chiudi") ){
-                    chiudi();
-                }
-                else if(messaggio.equalsIgnoreCase("termina server") ){
-                    chiudi();
-                    termina();
+                if(messaggioDaInviare.equalsIgnoreCase("chiudi")){
+                    connessione=false;
                 }
                 
             } catch (IOException ex) {
@@ -103,19 +112,18 @@ public class Server {
     }
 
     public void leggi() {
-        if(!serverSocket.isClosed() && !clientSocket.isClosed()){
-            String messaggioRicevuto=null;
+        if(connessione){
             try {
-                messaggioRicevuto = input.readLine(); //assegna alla variabile il messaggio ricevuto dal client
-                System.out.println("Messaggio inviato dal client: " + messaggioRicevuto); 
-                if(messaggioRicevuto == null){
-                    chiudi();
-                   
-                }else if(messaggioRicevuto.equalsIgnoreCase("chiudi") ){
-                    chiudi();
-                   
+                messaggioRicevuto = input.readLine(); 
+                System.out.println("Messaggio  inviato dal client: " + messaggioRicevuto); 
+                if(messaggioRicevuto.equalsIgnoreCase("chiudi")){
+                    connessione=false;
                 }
-            } catch (IOException ex) {
+            }
+            catch (NullPointerException ex) {
+                System.err.println(ex.getMessage());
+           }
+             catch (IOException ex) {
                  System.err.println(ex.getMessage());
             }
         }
@@ -137,7 +145,6 @@ public class Server {
 
     public void termina() {
         try {
-            
                 //close
                 serverSocket.close();
             
